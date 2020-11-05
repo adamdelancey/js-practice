@@ -36,8 +36,43 @@ function startGame(){
     disabledSelect = false;
     id("lives").textContent = "Lives Remaining: 3"
     // creates board based on difficulty
-    generateBoard(board);   
+    generateBoard(board);  
+    //Starts the timer
+    startTimer()
+    //sets theme based on input
+    if (id("theme-1").checked) {
+        qs("body").classList.remove("dark");
+    } else{
+        qs("body").classList.add("dark");
+    };
+    //show number container 
+    id("number-container").classList.remove("hidden");
 }
+
+function startTimer(){
+    //sets time remaining based on input
+    if (id("time-1").checked) timeRemaining = 180;
+    else if (id("time-2").checked) timeRemaining = 300;
+    else timeRemaining = 600;
+    //set timer for first second
+    id("timer").textContent = timeConversion(timeRemaining);
+    //sets timer to update every second
+    timer = setInterval(function(){
+        timeRemaining --;
+        //if no time remaining
+        if (timeRemaining === 0) endGame();
+        id("timer").textContent = timeConversion(timeRemaining);
+    }, 1000)
+}
+//converts seconds into string of MM:SS format
+function timeConversion(time){
+    let minutes = Math.floor(time/60);
+    if (minutes < 10) minutes = "0" + minutes;
+    let seconds = time % 60;
+    if (seconds < 10) seconds = "0" + seconds;
+    return minutes + ":" + seconds;
+}
+
 
 function generateBoard(board){
     //clear previous board
@@ -67,6 +102,8 @@ function generateBoard(board){
         if ((tile.id + 1) % 9 == 3 ||(tile.id +1) % 9 == 6 ){
             tile.classList.add("rightBorder");
         }
+        // add tile to board
+        id("board").appendChild(tile);
     }
 }
 
