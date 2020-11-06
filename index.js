@@ -24,7 +24,7 @@ window.onload = function(){
     //run start game function when button is clicked
     id("start-btn").addEventListener("click", startGame);
     //add event listener to each number in number container
-    for (let i=0; i <id("number-container").children.length; i++){
+    for (let i = 0; i <id("number-container").children.length; i++){
         id("number-container").children[i].addEventListener("click", function(){
             //if selecting is not disabled
             if (!disableSelect){
@@ -155,7 +155,7 @@ function updateMove(){
     if (selectedTile && selectedNum){
         // set the tile to the correct number
         selectedTile.textContent = selectedNum.textContent
-        //if the number batches the corresponding number in the solution key
+        //if the number matches the corresponding number in the solution key
         if (checkCorrect(selectedTile)){
             //deselects the tile
             selectedTile.classList.remove("selected");
@@ -189,9 +189,9 @@ function updateMove(){
             // restore tile color and remove selected from both
             selectedTile.classList.remove("incorrect");
             selectedTile.classList.remove("selected");
-            selectedNum.classList.remove("incorrect");
+            selectedNum.classList.remove("selected");
             //clear the tiles text and clear selected variables
-            selectedTile.textContent ="";
+            selectedTile.textContent = "";
             selectedTile = null;
             selectedNum = null;
             }, 1000);
@@ -207,17 +207,6 @@ function checkDone(){
     return true;
 }
 
-function endGame(){
-    //disable moves and stop the timer
-    disableSelect = true;
-    clearTimeout(timer);
-    //display win or loss message
-    if (lives === 0 || timeRemaining === 0){
-        id("lives").textContent = "You lost!";        
-    }else{
-        id("lives").textContent = "You won!"
-    }
-}
 
 function checkCorrect(tile){
     //set solution based on difficulty selection
