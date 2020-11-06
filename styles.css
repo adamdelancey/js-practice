@@ -2,7 +2,7 @@
     display: none;
 }
 
-body .dark{
+body.dark{
     background-color: #333333;
     color: white;
 }
@@ -34,7 +34,7 @@ button {
     justify-self: center;
 }
 
-p #timer, p #lives{
+p#timer,  p#lives{
     font-size: 25px;
     font-weight: bold;
     text-align: center;

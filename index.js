@@ -23,6 +23,29 @@ var disableSelect
 window.onload = function(){
     //run start game function when button is clicked
     id("start-btn").addEventListener("click", startGame);
+    //add event listener to each number in number container
+    for (let i=0; i <id("number-container").children.length; i++){
+        id("number-container").children[i].addEventListener("click", function(){
+            //if selecting is not disabled
+            if (!disableSelect){
+                //if number is already selected
+                if (this.classList.contains("selected")){
+                    //then remove selection
+                    this.classList.remove("selected");
+                    selectedNum = null;                    
+                }   else{
+                    //deselect all other numbers
+                    for (let i=0; i<9; i++){
+                        id("number-container").children[i].classList.remove("selected");
+                    }
+                    //select it and update selectedNum variable
+                    this.classList.add("selected");
+                    selectedNum = this;
+                    updateMove();
+                }
+            }
+        });
+    }
 }
 
 function startGame(){
@@ -89,6 +112,26 @@ function generateBoard(board){
             tile.textContent = board.charAt(i)
         }else{
             //add click event listener to tile
+            tile.addEventListener("click", function(){
+                //if selecting is not disable
+                if (!disableSelect){
+                    //if the tile is already selected
+                    if (tile.classList.contains("selected")){
+                        //then remove selection
+                        tile.classList.remove("selected");
+                        selectedTile = null;
+                    }else{
+                        //deselect all other tulls
+                        for(let i=0;i<81;i++){
+                            qsa(".tile")[i].classList.remove("selected");
+                        }
+                        //add selection and update variable
+                        tile.classList.add("selected");
+                        selectedTile = tile;
+                        updateMove();
+                    }
+                }
+            });
         }
         //assign tile id
         tile.id = idCount;
@@ -105,6 +148,86 @@ function generateBoard(board){
         // add tile to board
         id("board").appendChild(tile);
     }
+}
+
+function updateMove(){
+    //if a tile and a number is selected
+    if (selectedTile && selectedNum){
+        // set the tile to the correct number
+        selectedTile.textContent = selectedNum.textContent
+        //if the number batches the corresponding number in the solution key
+        if (checkCorrect(selectedTile)){
+            //deselects the tile
+            selectedTile.classList.remove("selected");
+            selectedNum.classList.remove("selected");
+            //clear the selected variables
+            selectedNum = null;
+            selectedTile = null;
+            //check if the board is completed
+        if  (checkDone());
+        endGame();
+            // if the number does not match the solution key      
+        }else{
+            //disable selecting new numbers for one second
+            disableSelect = true;
+            // make the tile turn red
+            selectedTile.classList.add("incorrect");
+            //run for one second
+            setTimeout(function(){
+            //subtract lives by one
+            lives --;
+            //if no lives life end the game
+            if (lives === 0) {
+                endGame();
+            }else{
+            //if lives is not equal to zero
+            //update lives text
+            id ("lives").textContent = "Lives Remaining " + lives;
+            //reenable selecting numbers and tiles
+            disableSelect = false;            
+            }
+            // restore tile color and remove selected from both
+            selectedTile.classList.remove("incorrect");
+            selectedTile.classList.remove("selected");
+            selectedNum.classList.remove("incorrect");
+            //clear the tiles text and clear selected variables
+            selectedTile.textContent ="";
+            selectedTile = null;
+            selectedNum = null;
+            }, 1000);
+        }
+    }
+}
+
+function checkDone(){
+    let tiles = qsa(".tile");
+    for (let i=0; i<tiles.length; i++){
+        if (tiles[i].textContent === "") return false;
+    }
+    return true;
+}
+
+function endGame(){
+    //disable moves and stop the timer
+    disableSelect = true;
+    clearTimeout(timer);
+    //display win or loss message
+    if (lives === 0 || timeRemaining === 0){
+        id("lives").textContent = "You lost!";        
+    }else{
+        id("lives").textContent = "You won!"
+    }
+}
+
+function checkCorrect(tile){
+    //set solution based on difficulty selection
+    let solution;
+    if (id("diff-1").checked) solution = easy[1];    
+    else if (id("diff-2").checked) solution = medium[1];
+    else solution = hard[1];
+    //if the tile's number is equal to the solutions number
+    if (solution.charAt(tile.id) === tile.textContent) return true;
+    else return false;
 }
 
 function clearPrevious(){
