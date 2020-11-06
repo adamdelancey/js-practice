@@ -61,7 +61,7 @@ function startGame(){
     // creates board based on difficulty
     generateBoard(board);  
     //Starts the timer
-    startTimer()
+    startTimer();
     //sets theme based on input
     if (id("theme-1").checked) {
         qs("body").classList.remove("dark");
@@ -82,7 +82,7 @@ function startTimer(){
     //sets timer to update every second
     timer = setInterval(function(){
         timeRemaining --;
-        //if no time remaining
+        //if no time remaining end game
         if (timeRemaining === 0) endGame();
         id("timer").textContent = timeConversion(timeRemaining);
     }, 1000)
@@ -148,6 +148,25 @@ function generateBoard(board){
         // add tile to board
         id("board").appendChild(tile);
     }
+}
+function clearPrevious(){
+    //access all of the tiles
+    let tiles = qsa(".tile");
+    //remove each tile
+    for (let i=0; i<tiles.length; i++){
+        tiles[i].remove()
+    }
+
+    //if there is a timer, clear it
+    if (timer) clearTimeout(timer);
+
+    //deselect any numbers
+    for (let i =0; i<id("number-container").children.length; i++){
+        id("number-container").children[i].classList.remove("selected")
+    }
+    // clear selected variables
+    selectedTile = null;
+    selectedNum = null;
 }
 
 function updateMove(){
@@ -219,25 +238,7 @@ function checkCorrect(tile){
     else return false;
 }
 
-function clearPrevious(){
-    //access all of the tiles
-    let tiles = qsa(".tile");
-    //remove each tile
-    for (let i=0; i<tiles.length; i++){
-        tiles[i].remove()
-    }
 
-    //if there is a timer, clear it
-    if (timer) clearTimeout(timer);
-
-    //deselect any numbers
-    for (let i =0; i<id("number-container").children.length; i++){
-        id("number-container").children[i].classList.remove("selected")
-    }
-    // clear selected variables
-    selectedTile = null;
-    selectedNum = null;
-}
 
 //helper functions
 function id (id){
